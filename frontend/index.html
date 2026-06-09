@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumExam | Premium Online Exam Platform</title>
+    
+    <!-- SEO Best Practices Metadata -->
+    <meta name="description" content="QuantumExam is a modern, timed cloud-based exam portal featuring automatic evaluation, immediate result generation, and a rich admin analytics dashboard.">
+    <meta name="keywords" content="online exam system, serverless testing, timed exam, admin dashboard, auto-evaluation">
+    <meta name="author" content="QuantumExam Team">
+    
+    <!-- Google Fonts & Material Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Custom Vanilla Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Application Top Navigation Bar -->
+    <nav class="app-navbar" id="appNav">
+        <div class="brand-container">
+            <div class="brand-logo">
+                QuantumExam<div class="brand-logo-dot"></div>
+            </div>
+        </div>
+
+        <div class="nav-user-info" id="navUserInfo" style="display: none;">
+            <div class="user-badge" id="navUserBadge">
+                <div id="roleDot" class="user-role-dot"></div>
+                <span id="userNameBadge" style="font-weight: 500;">User Name</span>
+            </div>
+            <button class="btn btn-logout" id="logoutBtn">
+                <span class="material-icons" style="font-size: 1.1rem;">logout</span> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- 1. LOGIN & REGISTRATION VIEW -->
+    <main class="app-view" id="loginView" style="display: block;">
+        <div class="auth-wrapper">
+            <div class="glass-panel auth-card">
+                
+                <!-- Login Box -->
+                <div id="loginFormContainer">
+                    <div class="auth-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to your QuantumExam workspace</p>
+                    </div>
+                    
+                    <div id="loginError" class="glass-panel" style="display: none; color: var(--color-error); background: var(--color-error-bg); border-color: var(--color-error); padding: 0.75rem 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                        Invalid credentials.
+                    </div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label" for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" class="form-input" placeholder="student@exam.com / admin@exam.com" required autocomplete="username">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                    </form>
+                    
+                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Don't have an account? <a href="javascript:void(0)" onclick="toggleAuthMode('register')">Register here</a>
+                    </p>
+                </div>
+
+                <!-- Registration Box -->
+                <div id="registerFormContainer" style="display: none;">
+                    <div class="auth-header">
+                        <h2>Create Account</h2>
+                        <p>Register as a student or portal administrator</p>
+                    </div>
+                    
+                    <div id="registerError" class="glass-panel" style="display: none; color: var(--color-error); background: var(--color-error-bg); border-color: var(--color-error); padding: 0.75rem 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                        Registration failed.
+                    </div>
+                    <div id="registerSuccess" class="glass-panel" style="display: none; color: var(--color-success); background: var(--color-success-bg); border-color: var(--color-success); padding: 0.75rem 1rem; margin-bottom: 1.5rem; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                        Successfully registered!
+                    </div>
+
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label" for="registerName">Full Name</label>
+                            <input type="text" id="registerName" class="form-input" placeholder="e.g., Harshal Jare" required autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="registerEmail">Email Address</label>
+                            <input type="email" id="registerEmail" class="form-input" placeholder="name@domain.com" required autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" required autocomplete="new-password">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label class="form-label" for="registerRole">Workspace Role</label>
+                            <select id="registerRole" class="form-select">
+                                <option value="student">Student (Exams Workspace)</option>
+                                <option value="admin">Administrator (Portal Dashboard)</option>
+                            </select>
+                        </div>
+                        <button type="submit" id="registerSubmitBtn" class="btn btn-primary" style="width: 100%;">Create Account</button>
+                    </form>
+                    
+                    <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Already registered? <a href="javascript:void(0)" onclick="toggleAuthMode('login')">Sign In here</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- 2. STUDENT DASHBOARD VIEW -->
+    <main class="app-view" id="student-dashboardView" style="display: none;">
+        <header style="margin-bottom: 2.5rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Student Dashboard</h1>
+            <p style="color: var(--text-secondary);">Explore scheduled exams and review your progress tracking metrics.</p>
+        </header>
+
+        <section style="margin-bottom: 3rem;">
+            <h2 class="admin-section-title">Available Active Exams</h2>
+            <div class="cards-grid" id="availableExamsGrid">
+                <!-- Populated dynamically via app.js -->
+            </div>
+        </section>
+
+        <section>
+            <h2 class="admin-section-title">Your Exam Performance History</h2>
+            <div class="glass-panel table-panel">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Exam Title</th>
+                                <th>Raw Score</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                                <th>Submission Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentPreviousResults">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 3. TIMED EXAM WORKSPACE VIEW -->
+    <main class="app-view" id="examView" style="display: none;">
+        <header style="margin-bottom: 1.5rem;">
+            <h1 id="examWorkspaceTitle" style="font-size: 2.25rem;">Active Exam Portal</h1>
+        </header>
+
+        <div class="exam-workspace-layout">
+            
+            <!-- Left Side: Main Question Workspace -->
+            <section class="glass-panel exam-main-panel">
+                <div class="exam-header-bar">
+                    <span id="questionCounterText" class="question-counter">Question 1 of 5</span>
+                    <div id="countdownTimer" class="timer-box">
+                        <span class="material-icons">schedule</span> 00:00
+                    </div>
+                </div>
+
+                <div id="currentQuestionText" class="question-text">
+                    Question text will load here...
+                </div>
+
+                <div id="optionsContainer" class="options-container">
+                    <!-- Options buttons loaded dynamically via app.js -->
+                </div>
+
+                <div class="navigation-controls">
+                    <button class="btn btn-secondary" id="prevQuestionBtn">
+                        <span class="material-icons">chevron_left</span> Previous
+                    </button>
+                    <button class="btn btn-primary" id="submitExamBtn" style="background: var(--secondary-glow); color: white; box-shadow: 0 4px 15px rgba(177, 82, 255, 0.25);">
+                        Submit Exam <span class="material-icons">check_circle</span>
+                    </button>
+                    <button class="btn btn-primary" id="nextQuestionBtn">
+                        Next <span class="material-icons">chevron_right</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Side: Sidebar Navigation Indicator Grid -->
+            <aside class="glass-panel exam-sidebar">
+                <h3 class="sidebar-title">Question Navigator</h3>
+                
+                <div class="question-grid" id="examQuestionGrid">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="grid-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot active"></div>
+                        <span>Current Active Question</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot answered"></div>
+                        <span>Answered / Saved</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot unvisited"></div>
+                        <span>Unanswered / Open</span>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- 4. EXAM RESULT REVIEW VIEW -->
+    <main class="app-view" id="resultView" style="display: none;">
+        <div class="result-container">
+            <div class="glass-panel result-card">
+                
+                <!-- Circular Percentage Gauge -->
+                <div class="result-badge-container">
+                    <svg class="gauge-svg">
+                        <defs>
+                            <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#B39256" />
+                                <stop offset="100%" stop-color="#E5C789" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="75" cy="75" r="70" class="gauge-bg" />
+                        <circle cx="75" cy="75" r="70" class="gauge-fill" id="gaugeCircleFill" />
+                        <text x="75" y="82" class="gauge-text" id="resultPercentText">0%</text>
+                    </svg>
+                </div>
+
+                <h2 id="resultStatusTitle" class="result-title">Calculating Score...</h2>
+                <div style="margin-bottom: 1.5rem;">
+                    <span id="resultStatusBadge" class="badge-status pass">PASS</span>
+                </div>
+                
+                <p class="result-subtitle" id="resExamTitle">Python Programming Basics</p>
+
+                <!-- Stats summary grid -->
+                <div class="result-summary-stats">
+                    <div class="stat-box">
+                        <span id="resTotalQuestions" class="stat-value">5</span>
+                        <span class="stat-label">Total Questions</span>
+                    </div>
+                    <div class="stat-box">
+                        <span id="resCorrectAnswers" class="stat-value">4</span>
+                        <span class="stat-label">Correct Answers</span>
+                    </div>
+                    <div class="stat-box">
+                        <span id="resScore" class="stat-value">4/5</span>
+                        <span class="stat-label">Final Score</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="window.location.hash = 'student-dashboard'" style="padding: 0.75rem 2rem;">
+                    Back to Dashboard <span class="material-icons">arrow_forward</span>
+                </button>
+            </div>
+
+            <!-- Detail Questions Review Breakdown -->
+            <section style="margin-top: 3rem;">
+                <h3 class="review-header">Detailed Question-by-Question Review</h3>
+                <div id="resultQuestionsReviewList">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 5. PORTAL ADMINISTRATOR DASHBOARD VIEW -->
+    <main class="app-view" id="admin-dashboardView" style="display: none;">
+        <header style="margin-bottom: 2.5rem;">
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Portal Administrator Panel</h1>
+            <p style="color: var(--text-secondary);">Manage curriculum testing database, review student reports, and audit statistics.</p>
+        </header>
+
+        <!-- KPI Metrics Grid Row -->
+        <section class="admin-metrics-row">
+            <div class="glass-panel metric-card">
+                <div class="metric-header">Total Registered Students</div>
+                <div id="adminTotalStudents" class="metric-num">0</div>
+            </div>
+            <div class="glass-panel metric-card">
+                <div class="metric-header">Total Exams Conducted</div>
+                <div id="adminTotalExams" class="metric-num">0</div>
+            </div>
+            <div class="glass-panel metric-card">
+                <div class="metric-header">System Average Score</div>
+                <div id="adminAvgScore" class="metric-num" style="color: var(--accent-cyan); text-shadow: 0 0 10px rgba(0,242,254,0.2);">0%</div>
+            </div>
+            <div class="glass-panel metric-card">
+                <div class="metric-header">Passing Success Rate</div>
+                <div id="adminPassRate" class="metric-num" style="color: var(--color-success); text-shadow: 0 0 10px rgba(16,185,129,0.2);">0%</div>
+            </div>
+        </section>
+
+        <!-- Dashboard Multi-column row layout -->
+        <div class="admin-layout-columns" style="margin-bottom: 3rem;">
+            
+            <!-- Column 1: Performance Charts -->
+            <section class="glass-panel analytics-chart-container">
+                <h3 class="admin-section-title">
+                    <span>Performance Analytics by Exam</span>
+                    <span class="material-icons text-secondary" style="font-size: 1.25rem;">bar_chart</span>
+                </h3>
+                <div id="analyticsChartContainer" style="display: flex; flex-grow: 1;">
+                    <!-- Bar charts drawn here via app.js -->
+                </div>
+            </section>
+
+            <!-- Column 2: Question Management form -->
+            <section class="glass-panel" style="padding: 1.5rem;">
+                <h3 class="admin-section-title">Add Exam Question</h3>
+                
+                <div id="addQuestionError" class="glass-panel" style="display: none; color: var(--color-error); background: var(--color-error-bg); border-color: var(--color-error); padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; border-radius: var(--radius-sm);">
+                    Error adding question.
+                </div>
+                <div id="addQuestionSuccess" class="glass-panel" style="display: none; color: var(--color-success); background: var(--color-success-bg); border-color: var(--color-success); padding: 0.6rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; border-radius: var(--radius-sm);">
+                    Question added successfully!
+                </div>
+
+                <form id="addQuestionForm">
+                    <div style="display: grid; grid-template-columns: 1fr 120px; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label class="form-label">Exam Subject</label>
+                            <select id="questionExamSelect" class="form-select" style="padding: 0.55rem 1rem; font-size: 0.9rem;" required>
+                                <option value="">-- Select Exam --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Correct Option</label>
+                            <select id="questionCorrectOption" class="form-select" style="padding: 0.55rem 1rem; font-size: 0.9rem;" required>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label">Question Text</label>
+                        <input type="text" id="questionTextVal" class="form-input" style="padding: 0.55rem 1rem; font-size: 0.9rem;" placeholder="Write question statement here..." required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <label class="form-label" style="font-size: 0.75rem;">Option A</label>
+                            <input type="text" id="questionOptA" class="form-input" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" placeholder="Option A text" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 0.75rem;">Option B</label>
+                            <input type="text" id="questionOptB" class="form-input" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" placeholder="Option B text" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 0.75rem;">Option C</label>
+                            <input type="text" id="questionOptC" class="form-input" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" placeholder="Option C text" required>
+                        </div>
+                        <div>
+                            <label class="form-label" style="font-size: 0.75rem;">Option D</label>
+                            <input type="text" id="questionOptD" class="form-input" style="padding: 0.55rem 0.75rem; font-size: 0.85rem;" placeholder="Option D text" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="addQuestionBtn" class="btn btn-primary" style="width: 100%; font-size: 0.9rem; padding: 0.55rem 1.25rem;">
+                        Add Question Database <span class="material-icons" style="font-size: 1rem;">add_circle</span>
+                    </button>
+                </form>
+            </section>
+
+        </div>
+
+        <!-- Student attempts log list table -->
+        <section>
+            <h2 class="admin-section-title">All Student Exam Submissions</h2>
+            <div class="glass-panel table-panel">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>Exam Title</th>
+                                <th>Raw Score</th>
+                                <th>Status</th>
+                                <th>Submission Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminStudentAttempts">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Import JavaScript bundles -->
+    <script src="js/mock_data.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
