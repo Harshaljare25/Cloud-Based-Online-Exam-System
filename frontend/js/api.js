@@ -4,7 +4,7 @@
 // Set this to true to connect to local python server (http://localhost:5000)
 // Otherwise, it runs on browser-only local storage mock mode
 let LIVE_API_MODE = true;
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "https://cloud-based-online-exam-system.onrender.com";
 
 // Helper to initialize local storage mock DB
 function initMockDB() {
