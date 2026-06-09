@@ -3,13 +3,14 @@ import socketserver
 import json
 import urllib.parse
 import traceback
+import os
 
 # Import Lambda handlers
 from lambda_handlers.auth_handler import lambda_handler as auth_handler
 from lambda_handlers.exam_handler import lambda_handler as exam_handler
 from lambda_handlers.admin_handler import lambda_handler as admin_handler
 
-PORT = 5000
+PORT = int(os.environ.get('PORT', 5000))
 
 class APIGatewaySimulator(http.server.BaseHTTPRequestHandler):
     """
